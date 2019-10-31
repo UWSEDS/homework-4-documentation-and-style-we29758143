@@ -5,11 +5,13 @@ Created on Mon Oct 28 22:00:44 2019
 
 This is module for testing dataframe for three cases.
 
-1. Test if all the values have correct data type
+1. Test if dataframe meets three requirements
 
-2. Test if dataframe contains nan value
+2. Test if all the values have correct data type
 
-3. Test if dataframe have at least one row
+3. Test if dataframe contains nan value
+
+4. Test if dataframe have at least one row
 
 @author: lvguanxun
 """
@@ -33,6 +35,35 @@ def read_data(url):
     """
     return pd.read_csv(url)
 
+#check three requirements
+def test_create_dataframe(dataframe, col_name):
+    """
+    This function check three requirements
+    1.Check if dataframe columns contains only the columns in second parameter
+    2.Check if number of rows is greater than 10
+    3.Check if values are the correct type
+
+    Parameters
+    ----------
+    dataframe: pandas dataframe
+    col_name: list of column
+
+    Returns
+    -------
+    is_valid: boolean
+        True if meet three requirements, false if not
+    """
+    is_valid = True
+    if list(dataframe.columns) != col_name:
+        is_valid = False
+    if len(dataframe) < 10:
+        is_valid = False
+    for i in dataframe.columns:
+        for j in range(len(dataframe)):
+            if type(dataframe[i][j]) != type(dataframe[i][0]):
+                is_valid = False
+                break
+    return is_valid
 
 #test if correct values type, else raise ValueError
 def test_columns_correct(dataframe):
@@ -111,15 +142,3 @@ def test_row(dataframe):
         is_valid = False
         raise ValueError("dataframe must has at least one row")
     return is_valid
-
-"""
-pylint score
-lvguanxunde-MacBook-Pro:homework-4-documentation-and-style-we29758143 lvguanxun$ pylint testing_dataframe.py
-************* Module testing_dataframe
-testing_dataframe.py:59:15: C0123: Using type() instead of isinstance() for a typecheck. (unidiomatic-typecheck)
-testing_dataframe.py:85:11: C0121: Comparison to True should be just 'expr' (singleton-comparison)
-testing_dataframe.py:110:7: C1801: Do not use `len(SEQUENCE)` to determine if a sequence is empty (len-as-condition)
-
-------------------------------------------------------------------
-Your code has been rated at 8.75/10 (previous run: 7.50/10, +1.25)
-"""
